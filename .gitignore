@@ -1,0 +1,24 @@
+.agents
+skills-lock.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Executáveis compilados (manter .gitkeep)
+bin/*
+!bin/.gitkeep
+*.exe
+*.o
+*.obj
+
+# Arquivos gerados durante a execução do pipeline
+out/
+data/processed/
+data/results/
+
+# Arquivos temporários do sistema
+.DS_Store
+Thumbs.db
