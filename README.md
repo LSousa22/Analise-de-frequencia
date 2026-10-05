@@ -1,33 +1,25 @@
 # Cripto - Varredura e Análise de N-Gramas (Python + C)
 
-Sistema híbrido de alto desempenho para análise de frequência de digramas e trigramas em textos em Português e Inglês. Combina a facilidade e robustez do Python para normalização de texto e análise estatística/gráfica com a velocidade do C para varredura com janela deslizante e contagem de padrões com sobreposição (*overlap*).
+Sistema para análise de frequência de digramas e trigramas em textos em Português e Inglês, produzido para a disciplina de Tópicos especiais em engenharia de software (Criptografia).
 
 ---
 
-## 🏛 Arquitetura do Sistema
+## Arquitetura do Sistema
 
-O sistema opera em um pipeline desacoplado em 3 estágios independentes baseados em arquivos:
+O sistema opera em um pipeline em 3 estágios independentes baseados em arquivos:
 
-```text
-[Textos Brutos em data/raw/{pt-br,eng}]
-       ↓ (Etapa 1 - Python: normalizer.py)
-[Corpus Normalizado em data/processed/corpus_{pt,en}.txt]
-       ↓ (Etapa 2 - C: bin/scanner.exe)
-[Frequências Brutas em data/results/counts_{pt,en}.csv]
-       ↓ (Etapa 3 - Python: analytics.py)
-[Tabelas de Métricas no Terminal & Gráficos em out/]
-```
-
+Texto Brutos -> texto normalizado -> frequencias brutas -> métricas gráficas e via cli
 ---
 
 ## 📂 Estrutura de Pastas
 
 ```text
 Cripto/
+├── bin/                           # Executáveis compilados (scanner.exe)
 ├── data/
 │   ├── raw/                       # Adicione seus textos .txt aqui
-│   │   ├── pt-br/                 # ~20 textos em português
-│   │   └── eng/                   # ~20 textos em inglês
+│   │   ├── pt-br/                 # Textos em português
+│   │   └── eng/                   # Textos em inglês
 │   ├── processed/                 # Textos normalizados consolidados (gerados pelo normalizer)
 │   │   ├── corpus_pt.txt
 │   │   └── corpus_en.txt
@@ -35,6 +27,11 @@ Cripto/
 │       ├── counts_pt.csv
 │       └── counts_en.csv
 │
+├── docs/                          # Documentações e tabelas de referência
+│   ├── di-trigrams.md             # Tabela de referência de digramas e trigramas
+│   └── sample-texts.md            # Textos de exemplo e referências
+│
+├── out/                           # Gráficos de barras e comparativos salvos em PNG
 ├── src/
 │   ├── python/
 │   │   ├── normalizer.py          # Etapa 1: Limpeza Unicode NFKD, remoção de acentos e regex [a-z]
@@ -42,19 +39,19 @@ Cripto/
 │   │   └── config.py              # Definições de caminhos e constantes do projeto
 │   └── c/
 │       ├── scanner.c              # Etapa 2: Motor C com janela deslizante e contagem com overlap
-│       ├── dictionaries.h         # Dicionários de digramas e trigramas embutidos (di-trigrams.md)
+│       ├── scanner_core.h         # Lógica central e headers de leitura e contagem de n-gramas
+│       ├── dictionaries.h         # Dicionários de digramas e trigramas embutidos
 │       └── Makefile               # Regras de compilação via GCC
 │
-├── bin/                           # Executáveis compilados (scanner.exe)
-├── out/                           # Gráficos de barras e comparativos salvos em PNG
 ├── tests/                         # Suíte de testes unitários e de integração
-├── docs/
-│   └── GLOSSARY.md                # Glossário de termos e regras canônicas do domínio
+│   ├── test_normalizer.py
+│   ├── test_scanner.c
+│   ├── test_scanner_e2e.py
+│   └── test_analytics.py
 │
-├── main.py                        # Orquestrador mestre (executa todo o pipeline)
+├── main.py                        # Orquestrador mestre (executa todo o pipeline ou arquivo individual)
 ├── requirements.txt               # Dependências Python (pandas, matplotlib)
-├── di-trigrams.md                 # Tabela de referência de digramas e trigramas
-└── visao.md                       # Especificação original do projeto
+└── README.md                      # Documentação do projeto
 ```
 
 ---
@@ -76,7 +73,19 @@ Para rodar todas as etapas de ponta a ponta (normalização $\rightarrow$ compil
 python main.py
 ```
 
-### 3. Executar Etapas Isoladas
+### 3. Executar com um Arquivo Específico
+Para analisar um único arquivo de texto de forma isolada, gerando o relatório no terminal e o gráfico individual salvo em `out/`:
+
+```bash
+# Para texto em português (padrão):
+python main.py --file caminho/do/arquivo.txt
+
+# Ou especificando explicitamente o idioma (pt ou en):
+python main.py --file caminho/do/arquivo.txt --lang pt
+python main.py --file caminho/do/arquivo.txt --lang en
+```
+
+### 4. Executar Etapas Isoladas
 Você pode rodar qualquer etapa de forma independente:
 - **Apenas normalizar os textos:**
   ```bash
@@ -97,20 +106,3 @@ Você pode rodar qualquer etapa de forma independente:
   ```
 
 ---
-
-## 🧪 Suíte de Testes
-
-Para executar todos os testes automatizados (Python e C):
-```bash
-python -m unittest discover -s tests -p "test_*.py"
-gcc tests/test_scanner.c -o bin/test_scanner.exe && ./bin/test_scanner.exe
-```
-
----
-
-## 📊 Regras de Negócio Implementadas
-
-1. **Normalização Rígida**: Decomposição Unicode NFKD, conversão para minúsculas, remoção integral de acentos/diacríticos e isolamento estrito de caracteres `[a-z]+`.
-2. **Fronteira de Palavra (Word Boundary)**: O scanner opera estritamente palavra por palavra; nenhum n-grama cruza limites entre palavras contíguas.
-3. **Sobreposição (Overlap)**: Ocorrências contíguas compartilhadas são detectadas via janela deslizante (ex.: `aa` em `aaa` resulta em 2 ocorrências).
-4. **Métricas**: Frequência absoluta, frequência relativa ($\frac{\text{ocorrências}}{\text{total de palavras}}$) e frequência ponderada por 1.000 palavras.
