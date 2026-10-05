@@ -1,0 +1,17 @@
+## Português
+Digramas:
+
+DE, EN, ER, TE, ES, AS, RE, OS, DA, EM, DO, QU, NT, CO, OR, AR, RA, IA, AL, AN, ST, TA, CA, TI, RO, ME, MA, ND, CI, PR
+
+Trigramas:
+
+QUE, ENT, CON, EST, NTO, ADO, NDO, MEN, RES, COM, PAR, TER, PRE, ICA, ARA, TRA, STE, PRO, ETE, TÃO, AND, STA, MPO, ACA, RME, TAD, ODO, ODE, LHA, DES
+
+## Inglês
+Digramas:
+
+TH, HE, IN, ER, AN, RE, ON, AT, EN, ND, TI, ES, OR, TE, OF, ED, IS, IT, AL, AR, ST, TO, NT, NG, SE, HA, AS, OU, IO, LE
+
+Trigramas:
+
+THE, AND, ING, ENT, ION, HER, FOR, THA, NTH, INT, ERE, TIO, TER, EST, ERS, ATI, HAT, ATE, ALL, ETH, HES, VER, HIS, OFT, ITH, FTH, STH, NCE, CON, RES
