@@ -56,7 +56,7 @@ Cripto/
 
 ---
 
-## 🚀 Como Executar
+## Como Executar
 
 ### 1. Pré-requisitos
 - **Python 3.10+** (com `pandas` e `matplotlib` instalados)
